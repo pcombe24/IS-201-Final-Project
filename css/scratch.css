@@ -1,0 +1,339 @@
+body {
+    background-color: gray;
+    font-family: Arial, sans-serif;
+    color: navy;
+}
+body a {
+    color: navy;
+    text-decoration: none;
+}
+body a:hover {
+    font-weight: bold;
+}
+.common {
+    background-color: rgb(70, 202, 255);
+    position: absolute;
+}
+.common-nav-bar {
+    position: absolute;           /* allows placement within header */
+    top: 5px;                     /* moves nav to top */
+    right: 5px;                   /* moves nav to right */
+    display: flex;
+    gap: 8px;
+}
+.common-nav-bar a {
+    text-decoration: none;
+    padding: 6px 8px;
+    background: navy;
+    color: whitesmoke;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+.common-nav-bar a:hover {
+    background: #ddd;
+}
+.header {
+    top: 0%;
+    left: 0%;
+    right: 0%;
+    height: 113px;
+    border-bottom: 2px solid navy;
+}
+.header h1 {
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+    font-size: 32px;   
+}
+.header h3{
+    margin: 0;
+    padding: 0px 20px 20px 20px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: normal;
+    font-style: italic;
+}
+
+.left-menu {  
+    top: 115px;
+    left: 0%;
+    width: 263px;
+    height: 722px;
+    background-color: navy;
+    border-right: 2px solid navy;
+    overflow: auto;
+    position: absolute;
+    color: gray;
+}
+.left-menu a {
+    color: whitesmoke;
+}
+.left-menu ul li {
+    color: whitesmoke;
+    
+}
+.major-airlines{
+    top: 837px;
+    left: 0%;
+    width: 33.33%;
+    height: 3140px;
+    border-top: 2px solid navy;
+    border-right: 2px solid navy;
+    border-bottom: 1px solid navy;
+    color: darkslategray;
+    overflow: auto;
+}
+.major-airlines h2, .regional-airlines h2, .low-cost-airlines h2, .major-airlines h3, .regional-airlines h3, .low-cost-airlines h3 {
+    color: navy;
+}
+.middle-tableau { 
+    top: 115px;
+    left: 265px;
+    right: 315px;
+    height: 400px;
+    overflow: auto;
+    background-color: gray;
+    justify-content: center;
+    /* display: flex; */
+}
+.middle-youtube {
+    top: 515px;
+    position: absolute;
+    left: 265px;
+    right: 315px;
+    height: 320px;
+    /* overflow: auto; */
+}
+.low-cost-airlines {
+    top: 837px;
+    left: 33.33%;
+    right: 33.33%;
+    height: 3140px;
+    border-top: 2px solid navy;
+    border-left: 2px solid navy;
+    border-right: 2px solid navy;
+    border-bottom: 1px solid navy;
+    display: inline-block;   
+    color: darkslategray;
+    overflow: auto;
+}
+.low-cost-airlines h2, .regional-airlines h2, .major-airlines h2, .low-cost-airlines h3, .regional-airlines h3, .major-airlines h3 {
+    color: navy;    
+}
+/* .middle{
+    left: 265px;
+    right: 315px;
+    top: 837px;
+    height: 1000px;
+} */
+.right-menu {
+    top: 115px;
+    right: 0%;
+    width: 313px;
+    height: 722px;
+    border-left: 2px solid navy;
+    overflow: auto;
+    position: absolute;
+    color: gray;
+    background-color: navy;
+}
+.right-menu ul li {
+    color: whitesmoke;
+}
+.regional-airlines {
+    top: 837px;
+    right: 0%;
+    width: 33.33%;
+    height: 3140px;
+    border-top: 2px solid navy;
+    border-left: 2px solid navy;
+    border-bottom: 1px solid navy;
+    color: darkslategray;
+    overflow: auto;
+}
+.regional-airlines h2, .major-airlines h2, .low-cost-airlines h2, .regional-airlines h3, .major-airlines h3, .low-cost-airlines h3 {
+    color: navy;
+}
+.footer {
+    bottom: 0px;
+    left: 0%;
+    right: 0%;
+    height: 20px;
+    border-top: 2px solid navy;
+    text-align: right;
+    position: fixed;
+}
+.footer a {
+    color: navy;
+    text-decoration: none;
+}
+.footer a:hover {
+    font-weight: bold;
+}
+.ul-line-height {
+  line-height: 1.8;
+}
+.airline-logo {
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
+    object-fit: contain;
+    border-radius: 2px;
+}
+.major-airline-logo {
+    width: 50px;
+    height: 50px;
+    vertical-align: middle;
+    object-fit: contain;
+    border-radius: 4px;
+}
+.low-cost-airline-logo {
+    width: 50px;
+    height: 50px;
+    vertical-align: middle;
+    object-fit: contain;
+    border-radius: 4px;
+}
+.regional-airline-logo {
+    width: 50px;
+    height: 50px;
+    vertical-align: middle;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.header-logo {
+    width: 200px;
+    height: 100px;
+    object-fit: contain;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    text-align: left;
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
+.delta a:hover {
+    color: #C01933;
+}
+.american a:hover {
+    color: red;
+}
+.united a:hover {
+    color: #3960FB;
+}
+.alaska a:hover {
+    color: rgb(78, 248, 78);
+}
+.southwest a:hover {
+    color: #FF7E00;
+}
+.jetblue a:hover {
+    color: #0033A0;
+}
+.hawaiian a:hover {
+    color: #c60e7c;
+}
+.spirit a:hover {
+    color: #FFEE00;
+}
+.frontier a:hover {
+    color: #228B22;
+}
+.skywest a:hover {
+    color: white;
+}
+.endeavor a:hover {
+    color: #C01933;
+}
+.republic a:hover {
+    color: crimson;
+}
+.envoy a:hover {
+    color: red;
+} 
+.horizon a:hover {
+    color: rgb(78, 248, 78);
+}
+.mesa a:hover {
+    color: silver;
+}
+.go-jet a:hover {
+    color: rgb(71, 142, 255);
+}
+.back-to-top {
+    position: fixed;           /* allows placement within header */
+    bottom: 2px;                     /* moves nav to top */
+    left: 5px;                   /* moves nav to right */
+    display: flex;
+    gap: 8px;
+}
+.back-to-top a {
+    text-decoration: none;
+    color: navy;
+}
+.back-to-top a:hover {
+    font-weight: bold;
+}
+
+/* Responsive adjustments: stack columns and make middle content fluid on smaller screens */
+@media (max-width: 1100px) {
+    .left-menu, .right-menu {
+        position: static;
+        width: 100%;
+        height: auto;
+        left: auto;
+        right: auto;
+        border: none;
+        background-color: navy;
+    }
+
+    .major-airlines, .low-cost-airlines, .regional-airlines {
+        position: static;
+        width: 100%;
+        height: auto;
+        left: auto;
+        right: auto;
+        border: none;
+    }
+
+    .middle-tableau, .middle-youtube {
+        position: static;
+        left: auto;
+        right: auto;
+        top: auto;
+        width: 100%;
+        height: auto;
+        overflow: visible;
+        background-color: transparent;
+    }
+
+    .header {
+        position: relative;
+        height: auto;
+    }
+
+    .footer {
+        position: static;
+    }
+
+    body {
+        padding: 0 8px;
+    }
+
+    /* Make the Tableau embed itself fully fluid */
+    /* .tableauPlaceholder, .tableauPlaceholder object, .tableauViz, #viz1765092501110 {
+        width: 100% !important;
+        height: auto !important;
+        max-width: 100% !important;
+        display: block !important;
+    } */
+}
+
+/* Extra small screens: ensure iframes and embedded objects keep readable height */
+@media (max-width: 480px) {
+    .middle-youtube iframe {
+        height: 200px !important;
+    }
+}

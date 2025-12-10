@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Airline Wordle — 5-letter edition</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;background:#f6f7f9;margin:0;padding:20px;display:flex;flex-direction:column;align-items:center}
+    h1{margin:0 0 6px}
+    #meta{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+    #hint{font-weight:600}
+    #stats{font-size:14px;color:#333}
+    #board{display:grid;gap:8px;margin-bottom:14px}
+    .row{display:grid;grid-auto-flow:column;gap:8px}
+    .tile{width:60px;height:60px;background:#fff;border:2px solid #d6d8db;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;text-transform:uppercase}
+    .correct{background:#24ff10;color:#fff;border-color:#24ff10}
+    .present{background:blue;color:#fff;border-color:blue}
+    .absent{background:#787c7e;color:#fff;border-color:#787c7e}
+    #keyboard{display:grid;grid-template-columns:repeat(10,1fr);gap:8px;width:min(640px,92%)}
+    .key{padding:10px;border-radius:6px;border:0;background:#e2e4e7;font-weight:700;cursor:pointer}
+    .controls{margin-top:10px;display:flex;gap:8px}
+    @media(max-width:520px){.tile{width:44px;height:44px;font-size:18px}}
+  </style>
+</head>
+<body>
+  
+  <h1>Airline Wordle</h1>
+  <div id="meta">
+    <div id="hint">Hint: —</div>
+    <div id="stats">Wins: <span id="wins">0</span> | Losses: <span id="losses">0</span></div>
+  </div>
+
+  <div id="board" aria-live="polite"></div>
+  <div id="keyboard" aria-hidden="false"></div>
+  <div class="controls">
+    <button id="newBtn" class="key">New Game</button>
+    <label><input type="checkbox" id="hardMode"> Hard Mode</label>
+  </div>
+
+<script>
+const wordList = [
+  {word:'delta', hint:'Atlanta-based legacy carrier.'},
+  {word:'envoy', hint:'American Airlines regional brand.'},
+  {word:'spirt', hint:'(abbr) Spirit short form.'},
+  {word:'jetbl', hint:'(abbr) JetBlue short form.'},
+  {word:'front', hint:'(abbr) Frontier short form.'},
+  {word:'alask', hint:'(abbr) Alaska short form.'},
+  {word:'skies', hint:'The skies airlines fly in.'},
+  {word:'gates', hint:'Boarding locations at airports.'},
+  {word:'ramps', hint:'Ground area next to aircraft.'},
+  {word:'apron', hint:'Aircraft parking area.'},
+  {word:'tower', hint:'Air traffic control tower.'},
+  {word:'route', hint:'Flight path between airports.'},
+  {word:'miles', hint:'Frequent-flyer currency.'},
+  {word:'bonus', hint:'Promotional miles or benefits.'},
+  {word:'check', hint:'Baggage and ticket process.'},
+  {word:'claim', hint:'Baggage claim area.'},
+  {word:'flaps', hint:'Wing control surfaces used on approach.'},
+  {word:'radar', hint:'Weather and traffic detection.'},
+  {word:'props', hint:'Propeller-driven aircraft.'},
+  {word:'nacel', hint:'Engine nacelle (housing).'},
+  {word:'pilot', hint:'Person who flies the aircraft.'},
+  {word:'cabin', hint:'Passenger area inside an aircraft.'},
+  {word:'seats', hint:'Passenger seating on board.'},
+  {word:'belts', hint:'Safety belts worn by passengers.'},
+  {word:'bunks', hint:'Crew rest bunks on long flights.'},
+  {word:'deice', hint:'Remove ice from aircraft surfaces.'},
+  {word:'brake', hint:'Part of landing/taxi system.'},
+  {word:'climb', hint:'Phase of flight gaining altitude.'},
+  {word:'glide', hint:'Approach/final glide path.'},
+  {word:'stops', hint:'Layover points during itineraries.'},
+  {word:'flair', hint:'Showy service (product name-ish).'},
+  {word:'avion', hint:'French/Spanish root for airplane.'},
+  {word:'airpt', hint:'Abbrev. for airport.'},
+  {word:'runwy', hint:'Abbrev. runway.'},
+  {word:'wings', hint:'Aircraft lifting surfaces.'},
+  {word:'taxis', hint:'Aircraft moving under own power.'},
+  {word:'crews', hint:'Flight and cabin staff.'},
+  {word:'stewd', hint:'(abbr) steward/stewardess crew.'},
+  {word:'fares', hint:'Ticket prices.'},
+  {word:'loadx', hint:'Load/excess cargo abbrev.'},
+  {word:'cargo', hint:'Freight carried by airlines.'},
+  {word:'track', hint:'Baggage tracking systems.'},
+  {word:'codes', hint:'IATA/ICAO airline identifiers.'},
+  {word:'perch', hint:'Ramp/perch parking area term.'},
+  {word:'press', hint:'Cabin pressurization system.'},
+  {word:'uxone', hint:'(made-up) regional code example.'}
+];
+
+let answer = '';
+let currentRow = 0;
+let currentCol = 0;
+let guesses = Array(6).fill('');
+let maxRows = 6;
+let wins = 0;
+let losses = 0;
+
+const boardEl = document.getElementById('board');
+const keyboardEl = document.getElementById('keyboard');
+const hintEl = document.getElementById('hint');
+const winsEl = document.getElementById('wins');
+const lossesEl = document.getElementById('losses');
+const newBtn = document.getElementById('newBtn');
+const hardModeEl = document.getElementById('hardMode');
+
+function buildBoard() {
+  boardEl.innerHTML = '';
+  for (let r = 0; r < maxRows; r++) {
+    const row = document.createElement('div');
+    row.className = 'row';
+    for (let c = 0; c < 5; c++) {
+      const t = document.createElement('div');
+      t.className = 'tile';
+      t.id = `tile-${r}-${c}`;
+      row.appendChild(t);
+    }
+    boardEl.appendChild(row);
+  }
+}
+
+function buildKeyboard(){
+  keyboardEl.innerHTML = '';
+  const layout = 'qwertyuiopasdfghjklzxcvbnm';
+  for (let ch of layout) {
+    const btn = document.createElement('button');
+    btn.className = 'key';
+    btn.textContent = ch;
+    btn.onclick = ()=> handleKey(ch);
+    keyboardEl.appendChild(btn);
+  }
+  const enter = document.createElement('button'); 
+  enter.className='key'; 
+  enter.textContent='Enter'; 
+  enter.onclick=submitGuess; 
+  keyboardEl.appendChild(enter);
+
+  const back = document.createElement('button'); 
+  back.className='key'; 
+  back.textContent='⌫'; 
+  back.onclick=handleBackspace; 
+  keyboardEl.appendChild(back);
+}
+
+function newGame(){
+  const pick = wordList[Math.floor(Math.random()*wordList.length)];
+  answer = pick.word.toLowerCase();
+  hintEl.textContent = 'Hint: ' + pick.hint;
+  currentRow = 0;
+  currentCol = 0;
+  guesses = Array(maxRows).fill('');
+
+  document.querySelectorAll('.tile').forEach(t=>{
+    t.textContent = '';
+    t.className = 'tile';
+  });
+
+  updateStats();
+}
+
+function updateStats(){ 
+  winsEl.textContent = wins; 
+  lossesEl.textContent = losses; 
+}
+
+function handleKey(letter){
+  if(currentCol<5 && currentRow<maxRows){
+    guesses[currentRow] += letter;
+    const tile = document.getElementById(`tile-${currentRow}-${currentCol}`);
+    tile.textContent = letter;
+    currentCol++;
+  }
+}
+
+function handleBackspace(){
+  if(currentCol>0){
+    currentCol--;
+    guesses[currentRow] = guesses[currentRow].slice(0,-1);
+    const tile = document.getElementById(`tile-${currentRow}-${currentCol}`);
+    tile.textContent = '';
+  }
+}
+
+function submitGuess(){
+  const guess = guesses[currentRow] || '';
+  if(guess.length < 5){ 
+    alert('Not enough letters'); 
+    return; 
+  }
+
+  // Hard mode rule
+  if(hardModeEl.checked && currentRow>0){
+    const prevRow = currentRow-1;
+    for(let c=0;c<5;c++){
+      const prevTile = document.getElementById(`tile-${prevRow}-${c}`);
+      if(prevTile.classList.contains('correct')){
+        if(guess[c] !== prevTile.textContent){
+          alert('Hard mode: keep correct greens fixed.');
+          return;
+        }
+      }
+    }
+  }
+
+  // reveal tiles
+  for(let c=0;c<5;c++){
+    const tile = document.getElementById(`tile-${currentRow}-${c}`);
+    const ch = guess[c];
+
+    setTimeout(()=>{
+      if(ch === answer[c]) tile.classList.add('correct');
+      else if(answer.includes(ch)) tile.classList.add('present');
+      else tile.classList.add('absent');
+    }, c * 120);
+  }
+
+  // WIN
+  if(guess === answer){
+    setTimeout(()=>{
+      wins++;
+      updateStats();
+      alert('Correct! The word was ' + answer.toUpperCase());
+      newGame();
+    }, 700);
+    return;
+  }
+
+  currentRow++;
+  currentCol = 0;
+
+  // LOSS
+  if(currentRow >= maxRows){
+    setTimeout(()=>{
+      losses++;
+      updateStats();
+
+      alert('Game Over! The word was ' + answer.toUpperCase());
+
+      // 🔥 ADDED: Always restart after a loss
+      newGame();  // <--- This ensures restart happens 100% of the time
+
+    }, 700);
+  }
+}
+
+window.addEventListener('keydown', e=>{
+  if(e.key === 'Enter') submitGuess();
+  else if(e.key === 'Backspace') handleBackspace();
+  else if(/^[a-zA-Z]$/.test(e.key)) handleKey(e.key.toLowerCase());
+});
+
+newBtn.addEventListener('click', newGame);
+
+buildBoard();
+buildKeyboard();
+newGame();
+</script>
+
+<br><br>
+<div class="small text-muted fst-italic">
+  <a href="scratch.html" style="text-decoration:none;color:blue;">
+    <style>a:hover { font-weight:bold;}</style>
+    Back to Main Page
+  </a>
+</div>
+
+</body>
+</html>
