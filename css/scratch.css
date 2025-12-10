@@ -227,10 +227,10 @@ body a:hover {
     color: rgb(78, 248, 78);
 }
 .southwest a:hover {
-    color: #FF7E00;
+    color: gold;
 }
 .jetblue a:hover {
-    color: #0033A0;
+    color: rgb(183, 255, 219);
 }
 .hawaiian a:hover {
     color: #c60e7c;
